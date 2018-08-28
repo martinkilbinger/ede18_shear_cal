@@ -1,0 +1,269 @@
+epoch_index: 0
+epoch_offset: &id043 !!python/tuple [0.0, 0.0]
+epoch_schema:
+- &id034 !!python/tuple [index, &id001 !!python/name:__builtin__.int '']
+- &id035 !!python/tuple [x, *id001]
+- &id036 !!python/tuple [y, *id001]
+- &id037 !!python/tuple [xshift, &id002 !!python/name:__builtin__.float '']
+- &id038 !!python/tuple [yshift, *id002]
+- &id039 !!python/tuple [xmin, *id001]
+- &id040 !!python/tuple [xmax, *id001]
+- &id041 !!python/tuple [ymin, *id001]
+- &id042 !!python/tuple [ymax, *id001]
+- &id044 !!python/tuple [g1, *id002]
+- &id045 !!python/tuple [g2, *id002]
+- &id046 !!python/tuple [mu, *id002]
+- &id047 !!python/tuple [x_field_pos, *id001]
+- &id048 !!python/tuple [y_field_pos, *id001]
+- &id049 !!python/tuple [ID, *id001]
+- &id003 !!python/tuple [bulge_n, *id002]
+- &id004 !!python/tuple [bulge_hlr, *id002]
+- &id005 !!python/tuple [bulge_q, *id002]
+- &id006 !!python/tuple [bulge_beta_radians, *id002]
+- &id007 !!python/tuple [bulge_flux, *id002]
+- &id008 !!python/tuple [disk_hlr, *id002]
+- &id009 !!python/tuple [disk_q, *id002]
+- &id010 !!python/tuple [disk_beta_radians, *id002]
+- &id011 !!python/tuple [disk_flux, *id002]
+- &id012 !!python/tuple [gal_sn, *id002]
+- &id013 !!python/tuple [cosmos_ident, *id001]
+- &id014 !!python/tuple [g1_intrinsic, *id002]
+- &id015 !!python/tuple [g2_intrinsic, *id002]
+- &id016 !!python/tuple [opt_psf_lam_over_diam, *id002]
+- &id017 !!python/tuple [opt_psf_obscuration, *id002]
+- &id018 !!python/tuple [opt_psf_n_struts, *id001]
+- &id019 !!python/tuple [opt_psf_strut_angle, *id002]
+- &id020 !!python/tuple [opt_psf_pad_factor, *id002]
+- &id021 !!python/tuple [opt_psf_defocus, *id002]
+- &id022 !!python/tuple [opt_psf_astig1, *id002]
+- &id023 !!python/tuple [opt_psf_astig2, *id002]
+- &id024 !!python/tuple [opt_psf_coma1, *id002]
+- &id025 !!python/tuple [opt_psf_coma2, *id002]
+- &id026 !!python/tuple [opt_psf_trefoil1, *id002]
+- &id027 !!python/tuple [opt_psf_trefoil2, *id002]
+- &id028 !!python/tuple [opt_psf_spher, *id002]
+- &id029 !!python/tuple [opt_psf_jitter_sigma, *id002]
+- &id030 !!python/tuple [opt_psf_jitter_e, *id002]
+- &id031 !!python/tuple [opt_psf_jitter_beta, *id002]
+- &id032 !!python/tuple [opt_psf_charge_sigma, *id002]
+- &id033 !!python/tuple [opt_psf_charge_e1, *id002]
+field_index: 70
+galaxy:
+  schema:
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  - *id015
+metadata: {timestamp: '2013-10-08 10:27:32.255273', user: rmandelb}
+noise: {variance: 0.0013913041113875807}
+noise_seed: 2319157
+psf:
+  astig1: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    ih/JyWpLkD8=
+  astig2: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    odoX7Ux2pL8=
+  charge_e1: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    Z2Zmng1ZyT8=
+  charge_sigma: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    mpmZRkt9gj8=
+  coma1: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    UcTsFw3koD8=
+  coma2: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    v5bhaIp+lz8=
+  defocus: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    UdG9gWgaqL8=
+  jitter_beta: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    AADzZsPlWkA=
+  jitter_e: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    AACAfaIHwz8=
+  jitter_sigma: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    3gT/T432fD8=
+  lam_over_diam: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    9iicIYGiwz8=
+  n_struts: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - "\0\0\0\0\0\0\0\0"
+  obscuration: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    Z2Zmtjfavz8=
+  pad_factor: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    xsA2yvKh1T8=
+  schema:
+  - *id016
+  - *id017
+  - *id018
+  - *id019
+  - *id020
+  - *id021
+  - *id022
+  - *id023
+  - *id024
+  - *id025
+  - *id026
+  - *id027
+  - *id028
+  - *id029
+  - *id030
+  - *id031
+  - *id032
+  - *id033
+  spher: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    DXePzlwIgr8=
+  strut_angle: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - "\0\0\0\0\0\0\0\0"
+  trefoil1: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    aexK62y6e78=
+  trefoil2: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    ffD79cs7oj8=
+seed: 1336
+shear:
+  g1: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!binary |
+    YS20pJEGkr8=
+  g2: !!python/object/apply:numpy.core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args: [f8, 0, 1]
+    state: !!python/tuple [3, <, null, null, null, -1, -1, 0]
+  - !!python/str "Z\u04A1\x12\n\u0325?"
+  mu: 1.0
+star_schema:
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
+- *id016
+- *id017
+- *id018
+- *id019
+- *id020
+- *id021
+- *id022
+- *id023
+- *id024
+- *id025
+- *id026
+- *id027
+- *id028
+- *id029
+- *id030
+- *id031
+- *id032
+- *id033
+subfield_index: 70
+subfield_offset: *id043
+subfield_schema:
+- *id034
+- *id035
+- *id036
+- *id037
+- *id038
+- *id039
+- *id040
+- *id041
+- *id042
+- *id044
+- *id045
+- *id046
+- *id047
+- *id048
+- *id049
+- *id003
+- *id004
+- *id005
+- *id006
+- *id007
+- *id008
+- *id009
+- *id010
+- *id011
+- *id012
+- *id013
+- *id014
+- *id015
+xdither: 0.0
+ydither: 0.0
