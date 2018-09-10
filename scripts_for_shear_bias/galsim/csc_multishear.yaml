@@ -47,7 +47,8 @@ image:
             type: Eval
     pixel_scale: 0.05
     random_seed:
-        first: {key: noise_seed, type: Dict}
+        #first: {key: noise_seed, type: Dict}
+        first: 2349353
         nitems: 10000
         type: Sequence
     stamp_xsize: 96
@@ -59,7 +60,8 @@ input:
         file_name:
             format: epoch_catalog-%03d-%1d.fits
             items:
-            - {first: 0, last: 199, repeat: 1, type: Sequence}
+            #- {first: 0, last: 199, repeat: 1, type: Sequence} # MKDEBUG
+            - {first: 0, last: 3, repeat: 1, type: Sequence}
             - {nitems: 1, type: Sequence}
             type: FormattedStr
     dict:
@@ -67,7 +69,8 @@ input:
         file_name:
             format: epoch_parameters-%03d-%1d.yaml
             items:
-            - {first: 0, last: 199, repeat: 1, type: Sequence}
+            #- {first: 0, last: 199, repeat: 1, type: Sequence} # MKDEBUG
+            - {first: 0, last: 3, repeat: 1, type: Sequence}
             - {nitems: 1, type: Sequence}
             type: FormattedStr
 output:
@@ -75,7 +78,8 @@ output:
     file_name:
         format: image-%03d-%1d.fits
         items:
-        - {first: 0, last: 199, repeat: 1, type: Sequence}
+        #- {first: 0, last: 199, repeat: 1, type: Sequence} # MKDEBUG
+        - {first: 0, last: 3, repeat: 1, type: Sequence}
         - {nitems: 1, type: Sequence}
         type: FormattedStr
     nfiles: 200
