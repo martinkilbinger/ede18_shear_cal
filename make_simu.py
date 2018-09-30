@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 From GalSim demo6.py
 Create simulated images to measure the bias using A. Pujol technics.
