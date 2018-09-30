@@ -76,7 +76,7 @@ for k in range(ngal):
         gal_1 = galsim.RealGalaxy(real_galaxy_catalog, index = k, flux=gal_flux)
         gal_2 = galsim.RealGalaxy(real_galaxy_catalog, index = k, flux=gal_flux)
 
-        # Rotate by an angle of 90° to get <e_int> = 0
+        # Rotate galaxy by 90 for shape-noise suppression, <e_int> = 0
         theta = np.pi/2. * galsim.radians
         gal_2 = gal_2.rotate(theta)
 
