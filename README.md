@@ -17,3 +17,6 @@
       Mesure de biais, erreurs de jackknife
     * `shapelens`
       Pour tourner shapelens (mesure de forme KSB)
+* `bias_tools`
+  Scriptes et notebooks de Martin
+

@@ -1,0 +1,118 @@
+gal:
+    items:
+    -   ellip:
+            beta:
+                theta: {col: bulge_beta_radians, type: Catalog}
+                type: Rad
+            q: {col: bulge_q, type: Catalog}
+            type: QBeta
+        flux: {col: bulge_flux, type: Catalog}
+        half_light_radius: {col: bulge_hlr, type: Catalog}
+        n: {col: bulge_n, type: Catalog}
+        type: Sersic
+    -   ellip:
+            beta:
+                theta: {col: disk_beta_radians, type: Catalog}
+                type: Rad
+            q: {col: disk_q, type: Catalog}
+            type: QBeta
+        flux: {col: disk_flux, type: Catalog}
+        half_light_radius: {col: disk_hlr, type: Catalog}
+        type: Exponential
+    magnification: {col: mu, type: Catalog}
+    shear:
+        g1: {col: g1, type: Catalog}
+        g2: {col: g2, type: Catalog}
+        type: G1G2
+    type: Sum
+image:
+    gsparams: {maximum_fft_size: 10240}
+    index_convention: python
+    noise:
+        type: Gaussian
+        variance: {key: noise.variance, type: Dict}
+    nx_tiles: 100
+    ny_tiles: 100
+    offset:
+        type: XY
+        x:
+            fxdither: {key: xdither, type: Dict}
+            fxshift: {col: xshift, type: Catalog}
+            str: xdither + xshift
+            type: Eval
+        y:
+            fydither: {key: ydither, type: Dict}
+            fyshift: {col: yshift, type: Catalog}
+            str: ydither + yshift
+            type: Eval
+    pixel_scale: 0.05
+    random_seed:
+        #first: {key: noise_seed, type: Dict}
+        first: 2349353
+        nitems: 10000
+        type: Sequence
+    stamp_xsize: 96
+    stamp_ysize: 96
+    type: Tiled
+input:
+    catalog:
+        dir: control/space/constant
+        file_name:
+            format: epoch_catalog-%03d-%1d.fits
+            items:
+            - {first: 0, last: 199, repeat: 1, type: Sequence}
+            - {nitems: 1, type: Sequence}
+            type: FormattedStr
+    dict:
+        dir: control/space/constant
+        file_name:
+            format: epoch_parameters-%03d-%1d.yaml
+            items:
+            - {first: 0, last: 199, repeat: 1, type: Sequence}
+            - {nitems: 1, type: Sequence}
+            type: FormattedStr
+output:
+    dir: multishear
+    file_name:
+        format: image-%03d-%1d.fits
+        items:
+        - {first: 0, last: 199, repeat: 1, type: Sequence}
+        - {nitems: 1, type: Sequence}
+        type: FormattedStr
+    nfiles: 200
+    nproc: -1
+    type: Fits
+psf:
+    items:
+    -   ellip:
+            beta:
+                theta: {col: opt_psf_jitter_beta, index: 0, type: Catalog}
+                type: Deg
+            e: {col: opt_psf_jitter_e, index: 0, type: Catalog}
+            type: EBeta
+        sigma: {col: opt_psf_jitter_sigma, index: 0, type: Catalog}
+        type: Gaussian
+    -   ellip:
+            e1: {col: opt_psf_charge_e1, index: 0, type: Catalog}
+            e2: 0
+            type: E1E2
+        sigma: {col: opt_psf_charge_sigma, index: 0, type: Catalog}
+        type: Gaussian
+    -   astig1: {col: opt_psf_astig1, index: 0, type: Catalog}
+        astig2: {col: opt_psf_astig2, index: 0, type: Catalog}
+        coma1: {col: opt_psf_coma1, index: 0, type: Catalog}
+        coma2: {col: opt_psf_coma2, index: 0, type: Catalog}
+        defocus: {col: opt_psf_defocus, index: 0, type: Catalog}
+        lam_over_diam: {col: opt_psf_lam_over_diam, index: 0, type: Catalog}
+        nstruts: {col: opt_psf_n_struts, index: 0, type: Catalog}
+        obscuration: {col: opt_psf_obscuration, index: 0, type: Catalog}
+        pad_factor: {col: opt_psf_pad_factor, index: 0, type: Catalog}
+        spher: {col: opt_psf_spher, index: 0, type: Catalog}
+        strut_angle:
+            theta: {col: opt_psf_strut_angle, index: 0, type: Catalog}
+            type: Deg
+        suppress_warning: true
+        trefoil1: {col: opt_psf_trefoil1, index: 0, type: Catalog}
+        trefoil2: {col: opt_psf_trefoil2, index: 0, type: Catalog}
+        type: OpticalPSF
+    type: Convolve
