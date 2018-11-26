@@ -42,27 +42,27 @@ class gal_par:
 
 
 
-
 def get_slope(x, y):
     return y/x
 
 
-def all_shapes_shapelens(g_list, input_base_dir, output_base_path, nfiles):
+def all_shapes_shapelens(g_values, input_base_dir, output_base_path, nfiles, job=None):
     """Measure galaxy shapes in simulated images with various shear by
        calling shapelens (get-shapes).
 
     Parameters
     ----------
-    g_list: list of array(2, double)
+    g_values: list of array(2, double)
         shear value list
     input_base_dir: string
         base input directory
-  
- 
+    output_base_path: string
+        output base directory name 
     nfiles: int, optional, default=None
         number of files, if None use default number from galsim
         config file
-
+    job: class misc.param, optional, default=
+        job control
 
     Returns
     -------
@@ -73,7 +73,7 @@ def all_shapes_shapelens(g_list, input_base_dir, output_base_path, nfiles):
     
         input_psf_path = '{}/psf/starfield_image-{:03d}-0.fits'.format(input_base_dir, i)
 
-        for g in g_list:
+        for g in g_values:
 
             dir_name_shear = misc.get_dir_name_shear(g)
             input_gal_path = '{}/{}/image-{:03d}-0.fits'.format(input_base_dir, dir_name_shear, i)
@@ -82,12 +82,11 @@ def all_shapes_shapelens(g_list, input_base_dir, output_base_path, nfiles):
                 os.makedirs(output_dir)
 
             output_path = '{}/result-{:03d}.txt'.format(output_dir, i)
-
-            shapes_one_image(input_gal_path, input_psf_path, output_path)
-
+            shapes_one_image(input_gal_path, input_psf_path, output_path, job)
 
 
-def shapes_one_image(input_gal_path, input_psf_path, output_path):
+
+def shapes_one_image(input_gal_path, input_psf_path, output_path, job):
     """Measure galaxy shapes in simulated image.
 
     Parameters
@@ -98,15 +97,16 @@ def shapes_one_image(input_gal_path, input_psf_path, output_path):
         input psf file name
     output_path: string
         output path
+    job: class misc.param, optional, default=
+        job control
 
     Returns
     -------
     None
     """
 
-
     ksb_command = 'get_shapes -T -p {} {} > {}'.format(input_psf_path, input_gal_path, output_path)
-    misc.run_command(ksb_command)
+    misc.run_command(ksb_command, job=job, output_path=output_path)
 
 
 
@@ -157,8 +157,27 @@ def get_ksb(file_list, psf_path):
 
 
 
-def e12_2_epx(e1, e2, psf_theta):
-    return [], []
+def e12_2_epx(e1, e2, beta):
+    """Rotate ellipticity into the PSF orientation reference frame.
+
+    Parameters
+    ----------
+    e1, e2: double
+        ellipticy/shear Cartesian components
+    beta: double
+        orientation of the PSF.
+
+    Returns
+    -------
+    ep, ex: double
+        ellipticity/shear tangential and radial components
+    """
+
+    in_beta, in_q = g2bq(e1, e2)
+    out_beta = correct_radians(in_beta - beta)
+    ep, ex = bq2g(correct_radians(out_beta), in_q)
+
+    return ep, ex
 
 
 
@@ -220,7 +239,7 @@ def shear_response(results, dg, output_dir=None):
 
     Returns
     -------
-    R: matrix(2, 2)
+    R: matrix(2, 2) of double
         shear response matrix
     """
 
@@ -239,7 +258,7 @@ def shear_response(results, dg, output_dir=None):
         pass
 
     else:
-        print('Length of results dictionary is {}, not possible to obtain response matrix'.format(len(results))
+        print('Length of results dictionary is {}, not possible to obtain response matrix'.format(len(results)))
 
     if output_dir:
         for i in range(2):
@@ -248,3 +267,25 @@ def shear_response(results, dg, output_dir=None):
                 np.save(out_name, R[i][j])
 
     return R
+
+
+def shear_bias_m(R, i):
+    """Return multiplicative shear bias for component i given shear the response matrix R
+
+    Parameters
+    ----------
+    R: matrix(2, 2) of double
+        shear response matrix
+    i: int
+        component, 0 or 1
+
+    Returns
+    -------
+    m: double
+        multiplicative shear bias
+    """
+
+    assert(i==0 or i==1)
+
+    return R[i][i] - 1.0
+

@@ -25,7 +25,7 @@ import misc
 
 
 def create_all_sims_great3(g_list, config_path, config_psf_path, input_dir, output_base_dir, \
-                           nxy_tiles=None, nfiles=None):
+                           nxy_tiles=None, nfiles=None, job=None):
     """Create great3-like image and PSF simulations using galsim for a list of shears.
     
     g_list: list of array(2, double)
@@ -44,6 +44,8 @@ def create_all_sims_great3(g_list, config_path, config_psf_path, input_dir, outp
     nfiles: int, optional, default=None
         number of files, if None use default number from galsim
         config file
+    job: class misc.param, optional, default=
+        job control
 
     Returns
     -------
@@ -61,18 +63,18 @@ def create_all_sims_great3(g_list, config_path, config_psf_path, input_dir, outp
             os.makedirs(output_dir)
         
         create_sim_one_shear_great3(g, config_path, input_dir, output_dir, \
-                                    extra_str, nxy_tiles=nxy_tiles)
+                                    extra_str, nxy_tiles=nxy_tiles, job=job)
     
     # Create PSF
     outdir_psf = '{}/psf'.format(output_base_dir)
     galsim_command = 'galsim {0} input.catalog.dir={1} input.dict.dir={1} output.dir={2}{3}'. \
         format(config_psf_path, input_dir, outdir_psf, extra_str)
-    misc.run_command(galsim_command)
+    misc.run_command(galsim_command, job=job)
     
     
     
 def create_sim_one_shear_great3(g, config_path, input_dir, output_dir, \
-                                extra_str, nxy_tiles=None):
+                                extra_str, nxy_tiles=None, job=None):
     """Create great3-like image simulations for given constant shear by calling galsim.
     
     Parameters
@@ -85,11 +87,13 @@ def create_sim_one_shear_great3(g, config_path, input_dir, output_dir, \
         base output directory
     output_dir: string
         base output directory
+    extra_str: string
+        extra options for galsim
     nxy_tiles: int, optional, default=None
         number of tiles per direction, if None use default number
         from galsim config file
-    extra_str: string
-        extra options for galsim
+    job: class misc.param, optional, default=
+        job control
 
     Returns
     -------
@@ -98,10 +102,10 @@ def create_sim_one_shear_great3(g, config_path, input_dir, output_dir, \
 
     if nxy_tiles is not None:
         extra_str = '{0} image.nx_tiles={1} image.ny_tiles={1}'.format(extra_str, nxy_tiles)
-        
+
     galsim_command = 'galsim {0} gal.shear.g1={1} gal.shear.g2={2} input.catalog.dir={3} input.dict.dir={3} output.dir={4}{5}'. \
         format(config_path, g[0], g[1], input_dir, output_dir, extra_str)
-    misc.run_command(galsim_command)
+    misc.run_command(galsim_command, job=job)
 
 
 

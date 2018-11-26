@@ -31,8 +31,8 @@ image:
     noise:
         type: Gaussian
         variance: {key: noise.variance, type: Dict}
-    nx_tiles: 100
-    ny_tiles: 100
+    nx_tiles: 10
+    ny_tiles: 10
     offset:
         type: XY
         x:
@@ -49,7 +49,7 @@ image:
     random_seed:
         #first: {key: noise_seed, type: Dict}
         first: 2349353
-        nitems: 10000
+        nitems: 100
         type: Sequence
     stamp_xsize: 96
     stamp_ysize: 96
@@ -61,7 +61,7 @@ input:
             format: epoch_catalog-%03d-%1d.fits
             items:
             #- {first: 0, last: 199, repeat: 1, type: Sequence} # MKDEBUG
-            - {first: 0, last: 3, repeat: 1, type: Sequence}
+            - {first: 0, last: 10, repeat: 1, type: Sequence}
             - {nitems: 1, type: Sequence}
             type: FormattedStr
     dict:
@@ -70,7 +70,7 @@ input:
             format: epoch_parameters-%03d-%1d.yaml
             items:
             #- {first: 0, last: 199, repeat: 1, type: Sequence} # MKDEBUG
-            - {first: 0, last: 3, repeat: 1, type: Sequence}
+            - {first: 0, last: 10, repeat: 1, type: Sequence}
             - {nitems: 1, type: Sequence}
             type: FormattedStr
 output:
@@ -79,10 +79,10 @@ output:
         format: image-%03d-%1d.fits
         items:
         #- {first: 0, last: 199, repeat: 1, type: Sequence} # MKDEBUG
-        - {first: 0, last: 3, repeat: 1, type: Sequence}
+        - {first: 0, last: 10, repeat: 1, type: Sequence}
         - {nitems: 1, type: Sequence}
         type: FormattedStr
-    nfiles: 200
+    nfiles: 10
     nproc: -1
     type: Fits
 psf:
