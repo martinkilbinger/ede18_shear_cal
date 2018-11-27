@@ -20,33 +20,14 @@ from __future__ import print_function
 import os
 import numpy as np
 
-import misc
-
-
-
-class gal_par:
-    """Measured parameters of a galaxy sample.
-    """
-
-    def __init__(self, idn, e1, e2, scale, sn, beta, q, ep, ex):
-
-        self.idn   = idn
-        self.e1    = e1
-        self.e2    = e2
-        self.scale = scale
-        self.sn    = sn
-        self.beta  = beta
-        self.q     = q
-        self.ep    = ep
-        self.ex    = ex
-
+from misc import *
 
 
 def get_slope(x, y):
     return y/x
 
 
-def all_shapes_shapelens(g_values, input_base_dir, output_base_path, nfiles, job=None):
+def all_shapes_shapelens(g_values, input_base_dir, output_base_path, nfiles, nxy_tiles, job=None):
     """Measure galaxy shapes in simulated images with various shear by
        calling shapelens (get-shapes).
 
@@ -58,9 +39,10 @@ def all_shapes_shapelens(g_values, input_base_dir, output_base_path, nfiles, job
         base input directory
     output_base_path: string
         output base directory name 
-    nfiles: int, optional, default=None
-        number of files, if None use default number from galsim
-        config file
+    nfiles: int
+        number of files
+    nxy_tiles: int, optional, default=None
+        number of postage stamps per direction
     job: class misc.param, optional, default=
         job control
 
@@ -69,24 +51,29 @@ def all_shapes_shapelens(g_values, input_base_dir, output_base_path, nfiles, job
     None
     """
 
+    print('*** Start all_shapes_shapelens ***')
+
     for i in range(nfiles):
     
         input_psf_path = '{}/psf/starfield_image-{:03d}-0.fits'.format(input_base_dir, i)
 
         for g in g_values:
 
-            dir_name_shear = misc.get_dir_name_shear(g)
+            dir_name_shear = get_dir_name_shear(g)
             input_gal_path = '{}/{}/image-{:03d}-0.fits'.format(input_base_dir, dir_name_shear, i)
-            output_dir    = '{}/{}'.format(output_base_path, dir_name_shear)
+            output_dir     = '{}/{}'.format(output_base_path, dir_name_shear)
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
 
             output_path = '{}/result-{:03d}.txt'.format(output_dir, i)
-            shapes_one_image(input_gal_path, input_psf_path, output_path, job)
+            shapes_one_image(input_gal_path, input_psf_path, output_path, nxy_tiles, job)
+
+
+    print('*** End all_shapes_shapelens ***')
 
 
 
-def shapes_one_image(input_gal_path, input_psf_path, output_path, job):
+def shapes_one_image(input_gal_path, input_psf_path, output_path, nxy_tiles, job):
     """Measure galaxy shapes in simulated image.
 
     Parameters
@@ -97,6 +84,8 @@ def shapes_one_image(input_gal_path, input_psf_path, output_path, job):
         input psf file name
     output_path: string
         output path
+    nxy_tiles: int, optional, default=None
+        number of postage stamps per direction
     job: class misc.param, optional, default=
         job control
 
@@ -105,53 +94,85 @@ def shapes_one_image(input_gal_path, input_psf_path, output_path, job):
     None
     """
 
-    ksb_command = 'get_shapes -T -p {} {} > {}'.format(input_psf_path, input_gal_path, output_path)
-    misc.run_command(ksb_command, job=job, output_path=output_path)
+    ksb_command = 'get_shapes -T -g {} -p {} {} > {}'.\
+        format(nxy_tiles, input_psf_path, input_gal_path, output_path)
+
+    # Need to use os.system for the shell command 'get_shapes', since output
+    # is written to stoud (and to file with '>')
+    run_command(ksb_command, job=job, output_path=output_path, shell='system')
 
 
 
-def get_ksb(file_list, psf_path):
+def all_read_shapelens(g_dict, input_base_dir, psf_path, nfiles):
     """Read and return KSB results from files.
     
     Parameters
     ----------
-    file_list: list of strings
-        image files with measured shapes and other quantities.
+    g_dict: dictionary of array(2, double)
+        shear value list
+    input_base_dir: string
+        base input directory
     psf_path: string
         directory where PSE output of the PSF is saved.
+    nfiles: int
+        number of files
     
     Returns
     -------
     results: class gal_par
         galaxy parameters
     """
-    
-    final_gal_id = np.array([])
-    final_e1 = np.array([])
-    final_e2 = np.array([])
-    out_scale = np.array([])
-    out_sn = np.array([])
-    psf_theta = np.array([])
 
-    for filename in file_list:
+    print('*** Start all_read_shapelens ***')
 
-        # Galaxy parameters
-        data = np.loadtxt(filename, usecols = (0,3,4,5,6))
-        final_gal_id = np.append(final_gal_id, data[:,0])
-        final_e1 = np.append(final_e1, data[:,1])
-        final_e2 = np.append(final_e2, data[:,2])
-        out_scale = np.append(out_scale, data[:,3])
-        out_sn = np.append(out_sn, data[:,4])
+    results = {}
 
-        # PSF parameters
-        pse_file = psf_path + 'starfield_image-' + file_list[0][-7:-4] + '-0.cat' #TODO change to subfield_image
-        psf_theta = np.append(psf_theta, np.loadtxt(pse_file)[:,10]/360.*2*np.pi)
+    for step in g_dict:
 
-    out_beta, out_q = g2bq(final_e1, final_e2)
-    out_beta = correct_radians(out_beta)
-    final_ep, final_ex = e12_2_epx(final_e1, final_e2, psf_theta)
+        dir_name_shear = get_dir_name_shear(g_dict[step])
 
-    results = gal_par(final_gal_id, final_e1, final_e2, out_scale, out_sn, out_beta, out_q, final_ep, final_ex)
+        final_gal_id = np.array([])
+        final_e1     = np.array([])
+        final_e2     = np.array([])
+        out_scale    = np.array([])
+        out_sn       = np.array([])
+        psf_theta    = np.array([])
+
+        for i in range(nfiles):
+
+            input_result_path = '{}/{}/result-{:03d}.txt'.format(input_base_dir, dir_name_shear, i)
+            input_psf_path = '{}/psf/starfield_image-{:03d}-0.fits'.format(input_result_path, i)
+
+            # Galaxy parameters
+            data = np.loadtxt(input_result_path, usecols = (0,3,4,5,6))
+            #print('File {}, data dim {}'.format(input_result_path, data.shape))
+            final_gal_id = np.append(final_gal_id, data[:,0])
+            final_e1     = np.append(final_e1, data[:,1])
+            final_e2     = np.append(final_e2, data[:,2])
+            out_scale    = np.append(out_scale, data[:,3])
+            out_sn       = np.append(out_sn, data[:,4])
+
+            # PSF parameters
+            # pse_file = psf_path + 'starfield_image-' + file_list[0][-7:-4] + '-0.cat' #TODO change to subfield_image
+            # Question to Arnau: What does subfield_image mean here?
+
+            pse_file = '{}/psf/starfield_image-{:03d}-0.cat'.format(input_base_dir, i)
+
+            if os.path.exists(pse_file):
+                psf_theta = np.append(psf_theta, np.loadtxt(pse_file)[:,10] / 180.0 * np.pi)
+                out_beta, out_q = g2bq(final_e1, final_e2)
+                out_beta = correct_radians(out_beta)
+                final_ep, final_ex = e12_2_epx(final_e1, final_e2, psf_theta)
+            else:
+                out_beta = []
+                out_q    = []
+                final_ep = []
+                final_ex = []
+
+        results[step] = gal_par.from_values(final_gal_id, final_e1, final_e2, out_scale, \
+                out_sn, out_beta, out_q, final_ep, final_ex)
+
+    print('*** End all_read_shapelens ***')
 
     return results
 
@@ -179,6 +200,28 @@ def e12_2_epx(e1, e2, beta):
 
     return ep, ex
 
+
+def bq2g(beta, q):
+    """Rotate ellipticity from beta, q to g1,g2 coordinates.
+
+    Parameters
+    ----------
+    beta, q: double
+        ellipticity/shear in beta, q coordinates
+
+    Returns
+    -------
+    g1, g2: double
+        components of ellipticity/shear
+   """
+
+    g1_sq = ((q - 1)**2.)/(((q + 1)**2.)*(1 + np.tan(2.*beta)**2.))
+    g1 = np.sqrt(g1_sq)
+    g1[np.tan(beta) > 1] = -g1[np.tan(beta) > 1]
+    g1[np.tan(beta) < -1] = -g1[np.tan(beta) < -1]
+    g2 = g1*np.tan(2.*beta)
+
+    return g1, g2
 
 
 def g2bq(g1, g2):
@@ -240,16 +283,19 @@ def shear_response(results, dg, output_dir=None):
     Returns
     -------
     R: matrix(2, 2) of double
-        shear response matrix
+        shear response matrix, with R[i][j] = d<eps^obs>_i / d g_j.
     """
 
-    R = np.zeros((2,2))
+    print('*** Start shear_response ***')
 
-    if len(results) == 4:
+    n = results.itervalues().next().len()
+    R = np.zeros((2, 2, n))
+
+    if len(results) == 4 or len(results) == 5:
 
         R[0,0] = get_slope(2 * dg, results[(+1, 0)].e1 - results[(-1, 0)].e1)
         R[1,1] = get_slope(2 * dg, results[(0, +1)].e2 - results[(0, -1)].e2)
-        R[0,1] = get_slope(2 * dg, results[(0, +1)].e1 - results[(0, -1)].e2)
+        R[0,1] = get_slope(2 * dg, results[(0, +1)].e1 - results[(0, -1)].e1)
         R[1,0] = get_slope(2 * dg, results[(+1, 0)].e2 - results[(-1, 0)].e2)
 
     elif len(results) == 3:
@@ -261,12 +307,44 @@ def shear_response(results, dg, output_dir=None):
         print('Length of results dictionary is {}, not possible to obtain response matrix'.format(len(results)))
 
     if output_dir:
-        for i in range(2):
-            for j in range(2):
-                out_name = '{}/R_{}_{}'.format(output_dir, i, j)
-                np.save(out_name, R[i][j])
+        if not os.path.isdir(output_dir):
+            os.makedirs(output_dir)
+
+        print('Saving R to file {}'.format(output_dir))
+        save_R(R, output_dir)
+
+    print('*** End shear_response ***')
 
     return R
+
+
+
+def save_R(R, direc):
+
+    for i in range(2):
+        for j in range(2):
+            fname = '{}/R_{}_{}.npy'.format(direc, i, j)
+            np.save(fname, R[i][j])
+
+
+
+def read_R(direc):
+
+    R = None
+
+    for i in range(2):
+        for j in range(2):
+            fname = '{}/R_{}_{}.npy'.format(direc, i, j)
+            r = np.load(fname)
+
+            if R is None:
+                n = r.shape[0]
+                R = np.zeros((2, 2, n))
+
+            R[i][j] = r
+
+    return R
+
 
 
 def shear_bias_m(R, i):

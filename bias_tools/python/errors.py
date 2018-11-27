@@ -17,6 +17,35 @@ of shear biases.
 from __future__ import print_function
 
 import numpy as np
+from misc import *
+
+
+
+def mean_over_shear(results):
+    """Return mean of measured galaxy properties over different sheared images.
+
+    Parameters
+    ----------
+    results: dictionary of class misc.gal_par
+        galaxy properties
+
+    Returns
+    -------
+    res_mean: class misc.gal_par
+        mean galaxy properties
+    """
+
+    res_mean = None
+
+    for step in results:
+
+        if res_mean is None:
+            pass
+            res_mean = gal_par.from_gal_par(results[step])
+            # TODO coding
+
+
+    return res_mean
 
 
 def get_jk_indices_1d(n, jk_num, rand_order = True):

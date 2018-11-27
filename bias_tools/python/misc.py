@@ -18,6 +18,7 @@ import subprocess
 import shlex
 
 
+
 class param:
     """General class to store (default) variables
     """
@@ -32,8 +33,43 @@ class param:
         return vars(self)
 
 
+class gal_par(object):
+    """Measured parameters of a galaxy sample.
+    """
 
-def run_command(cmd, job=None, output_path=None):
+    def __init__(self, idn, e1, e2, scale, sn, beta, q, ep, ex):
+
+        self.idn   = idn
+        self.e1    = e1
+        self.e2    = e2
+        self.scale = scale
+        self.sn    = sn
+        self.beta  = beta
+        self.q     = q
+        self.ep    = ep
+        self.ex    = ex
+
+
+    @classmethod
+    def from_gal_par(cls, other):
+
+        return cls(other.idn, other.e1, other.e2, other.scale, other.sn, other.beta, \
+                   other.q, other.ep, other.ex)
+
+
+    @classmethod
+    def from_values(cls, idn, e1, e2, scale, sn, beta, q, ep, ex):
+
+        return cls(idn, e1, e2, scale, sn, beta, q, ep, ex)
+
+
+    def len(self):
+
+        return len(self.idn)
+
+
+
+def run_command(cmd, job=None, output_path=None, shell='subprocess'):
 
     if job == None:
         job = param(re_run=True, dry_run=False)
@@ -60,17 +96,20 @@ def run_command(cmd, job=None, output_path=None):
         msg = '{}running {}'.format(msg, cmd)
         print(msg)
 
-        #ex = os.system(cmd)
-        c = shlex.split(cmd)
-        pipe = subprocess.Popen(c, stdout=subprocess.PIPE)
-        ex = 0
-        while True:
-            output = pipe.stdout.readline()
-            if output == '' and pipe.poll() is not None:
-                break
-            if output:
-                print(output.strip())
-            ex = pipe.poll()
+        if shell == 'system':
+            ex = os.system(cmd)
+        else:
+            c = shlex.split(cmd)
+            pipe = subprocess.Popen(c, stdout=subprocess.PIPE)
+            pipe = subprocess.Popen(c)
+            ex = 0
+            while True:
+                output = pipe.stdout.readline()
+                if output == '' and pipe.poll() is not None:
+                    break
+                if output:
+                    print(output.strip())
+                ex = pipe.poll()
 
         if ex:
             print('Last call returned error code {}'.format(ex))

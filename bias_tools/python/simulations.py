@@ -39,7 +39,7 @@ def create_all_sims_great3(g_list, config_path, config_psf_path, input_dir, outp
     output_dir: string
         base output directory
     nxy_tiles: int, optional, default=None
-        number of tiles per direction, if None use default number
+        number of postage stamps per direction, if None use default number
         from galsim config file
     nfiles: int, optional, default=None
         number of files, if None use default number from galsim
@@ -51,6 +51,8 @@ def create_all_sims_great3(g_list, config_path, config_psf_path, input_dir, outp
     -------
     None
     """
+
+    print('*** Start create_all_sims_great3 ***')
 
     extra_str = ''
     if nfiles is not None:
@@ -71,6 +73,7 @@ def create_all_sims_great3(g_list, config_path, config_psf_path, input_dir, outp
         format(config_psf_path, input_dir, outdir_psf, extra_str)
     misc.run_command(galsim_command, job=job)
     
+    print('*** End create_all_sims_great3 ***')
     
     
 def create_sim_one_shear_great3(g, config_path, input_dir, output_dir, \
