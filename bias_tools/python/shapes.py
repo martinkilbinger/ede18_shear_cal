@@ -145,6 +145,9 @@ def all_read_shapelens(g_dict, input_base_dir, psf_path, nfiles):
 
             # Galaxy parameters
             data = np.loadtxt(input_result_path, usecols = (0,3,4,5,6))
+            if data.shape[0] == 0:
+               raise IndexError('Data file \'{}\' with zero lines found'.format(input_result_path))
+
             #print('File {}, data dim {}'.format(input_result_path, data.shape))
             final_gal_id = np.append(final_gal_id, data[:,0])
             final_e1     = np.append(final_e1, data[:,1])

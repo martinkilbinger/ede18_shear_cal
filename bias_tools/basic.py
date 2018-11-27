@@ -73,11 +73,11 @@ g_values = g_dict.values()
 
 
 # Number of postage stamps is nxy_tiles^2
-nxy_tiles = 2
+nxy_tiles = 4
 #nxy_tiles = 100
 
 # Number of files with different constant shear and PSF
-nfiles    =  4
+nfiles    =  10
 #nfiles   = 200
 
 
@@ -87,11 +87,13 @@ nfiles    =  4
 
 
 # Files and directories
-galsim_config_fname     = 'csc_multishear.yaml'
-galsim_config_psf_fname = 'csc_psf.yaml'
-galsim_config_dir       = 'config/galsim'
-galsim_input_dir        = 'data/galsim/great3/control/space/constant'
-galsim_output_base_dir  = 'output/galsim'
+galsim_config_fname        = 'csc_multishear.yaml'
+galsim_config_psf_fname    = 'csc_psf.yaml'
+galsim_config_dir          = 'config/galsim'
+galsim_input_dir           = 'data/galsim/great3/control/space/constant'
+galsim_output_base_dir     = 'output/galsim'
+galsim_output_gal_fname_format = 'image-%03d-%1d.fits'
+galsim_output_psf_fname_format = 'starfield_image-%03d-%1d.fits'
 
 
 # In[9]:
@@ -108,7 +110,8 @@ galsim_config_psf_path = '{}/{}'.format(galsim_config_dir, galsim_config_psf_fna
 
 
 # TODO: Only run if output file does not exist
-#create_all_sims_great3(g_values, galsim_config_path, galsim_config_psf_path, galsim_input_dir, galsim_output_base_dir, nxy_tiles=nxy_tiles, nfiles=nfiles, job=job)
+create_all_sims_great3(g_values, galsim_config_path, galsim_config_psf_path, galsim_input_dir, galsim_output_base_dir, \
+        galsim_output_gal_fname_format, galsim_output_psf_fname_format, nxy_tiles=nxy_tiles, nfiles=nfiles, job=job)
 
 
 # ### Measure shapes
@@ -152,10 +155,16 @@ mean_over_shear(results)
 
 # ### Plot shear response
 
+nbins = 3
 xvar  = results[(0, 0)].sn
 xname = 'SNR'
-yvar  = R[0,0] - 1
-yname = '$m_1$'
-nbins = 3
-plot_mean_per_bin(xvar, xname, yvar, yname, nbins, error_mode='std', save=True, out_name='snr_m1.pdf')
+
+yvar   = [shear_bias_m(R, i) for i in [0, 1]]
+yvar.append(R[0,1])
+yname  = ['$m_1$', '$m_2$', '$R_{12}$']
+color  = ['g', 'r', 'b']
+marker = ['o', 's', 'd']
+x_mean, y_mean, y_std = plot_mean_per_bin_several(xvar, xname, yvar, yname, nbins, error_mode='std', \
+        color=color, lw=2, marker=marker, out_name='snr_m1.pdf')
+
 

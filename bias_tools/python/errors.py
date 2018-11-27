@@ -48,7 +48,7 @@ def mean_over_shear(results):
     return res_mean
 
 
-def get_jk_indices_1d(n, jk_num, rand_order = True):
+def get_jk_indices_1d(n, jk_num, rand_order=True):
     """Create list of indices 0 .. jk_num-1, filling up an array with length n with distribution
        of indices as equal as possible.
        for a Jackknife error analysis.
@@ -62,8 +62,8 @@ def get_jk_indices_1d(n, jk_num, rand_order = True):
     rand_order: bool, optional, default=True
         if True, the indices are returned in random order. 
     
-    Parameters
-    ----------
+    Returns
+    -------
     jk_indices: array of int
         array assigning an index (from 0 to jk_num - 1) to
         each of the data elements. 

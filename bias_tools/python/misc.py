@@ -101,7 +101,7 @@ def run_command(cmd, job=None, output_path=None, shell='subprocess'):
         else:
             c = shlex.split(cmd)
             pipe = subprocess.Popen(c, stdout=subprocess.PIPE)
-            pipe = subprocess.Popen(c)
+            #pipe = subprocess.Popen(c)
             ex = 0
             while True:
                 output = pipe.stdout.readline()
